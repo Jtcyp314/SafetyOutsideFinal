@@ -1,0 +1,96 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Safety Outside</title>
+    <link rel="stylesheet" href="home.css">
+<!--     <link href="https://seattleowl.com/pointer.js/pointer.css" rel="stylesheet">-->
+    <link href="https://fonts.googleapis.com/css?family=Fredoka+One&display=swap" rel="stylesheet">
+    
+
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+
+<body>
+    
+<!--    Code for logo-->
+    <img id = "logo" src = "logo.png" a href="index.html">
+
+
+<div class="perspective-text">
+     <div class="perspective-line">
+        <p>Is it</p>
+        <p>Is it</p>
+    </div>
+        <div class="perspective-line">
+            <p><span class="safe1">Safe</span> to</p>
+            <p><span class="safe2">Safe</span> to</p>
+        </div>
+            <div class="perspective-line">
+                <p>GO</p>
+                <p><span class="bike">BIKE</span> or <span class="run">RUN</span></p>
+            </div>
+                <div class="perspective-line">
+                    <p>Outside?</p>
+                    <p><span class="swim">SWIM</span> or <span class="hike">HIKE</span>?</p>
+                </div>
+        </div>
+    
+    
+    
+    <div class="container2">
+        <div class="block block1">
+           <input type="image" src="bikingcircle.png" alt="Bike" id ="bikeimg" class="img" onclick="myFunction()">
+             <h3 id="bikewords">BIKE</h3>
+        </div>
+        <div class="block block2">
+             <input type="image" src="test1.png" alt="Bike" id ="runimg" class="img" onclick="myFunction()">
+             <h3 id="runwords">RUN</h3>
+        </div>
+        <div class="block block3">
+             <input type="image" src="swimmingcircle.png" alt="Swim" id ="swimimg" class="img" onclick="myFunction()">
+             <h3 id="swimwords">SWIM</h3>
+        </div>
+        <div class="block block4">
+            <input type="image" src="hikecircle1.png" alt="Hike" id ="hikeimg" class="img" onclick="myFunction()">
+             <h3 id="runwords">HIKE</h3>
+        </div>
+    </div>
+    
+    <div id="myForm" style="display:none">
+        <form action="/action_page.php">
+            <span id="zipcode"> ZIPCODE: </span><input type="text">
+            <input type="submit" value="Submit">
+</form>
+        </div>
+    
+    
+<!--<script src="https://seattleowl.com/pointer.js/pointer.js"></script>-->
+        <script>
+//init_pointer({
+//  pointerColor: "#fff", // Css color
+//  ringSize: 10, // Pixels
+//  ringClickSize: 5 // Pixels when clicking
+//})
+    
+//mydiv = document.getElementById("myForm");
+// $("myForm").hide();
+function myFunction() {
+  var x = document.getElementById("myForm");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+//function myFunction() {
+//  var x = document.getElementById("myForm");
+//  if (x.style.display === "none") {
+//    x.style.display = "block";
+//  } else {
+//    x.style.display = "none";
+//  }
+//}
+    </script>
+</body>
+</html>

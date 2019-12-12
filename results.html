@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Results</title>
+        <link rel="stylesheet" href="results.css"> 
+        <link href="https://fonts.googleapis.com/css?family=Fredoka+One&display=swap" rel="stylesheet">
+    </head>
+
+    <body>
+        <img id = "logo" src = "logo.png" a href="index.html">
+
+        <script src="safety_algorithm.js"></script>
+        <script>
+            const NUM_HOURS = 2;
+            function toF (tempK) {
+                return Math.floor((tempK - 273) * 9/5 + 32);
+            }
+            function getTime(dateString) {
+                var dateNtime = dateString.split(" ");
+                var time24 = dateNtime[1];
+                var hms = time24.split(":");
+                var hours = hms[0], minutes = hms[1], x = "am";
+                if(hours >= 12) {
+                    x = "pm";
+                    if(hours > 12)
+                        hours -= 12;
+                }
+                if(hours == 0)
+                    hours = 12;
+                return hours + ":" + minutes + " " + x;
+            }
+            function printInfo(time, temp, weather, iconURL, safety_rating, alerts, tips) {
+                //printing out the basic weather info
+                document.write("<div id='hour'><div id='info'><h1>" + time);
+                document.write("</h1><img id='icon' src='" + iconURL +"'>");
+                document.write("<h3>"+temp+" &#8457</h3>");
+                document.write("<h3>" + weather + "</h3></div>");  
+                //printing out the alerts and suggestions
+                document.write("<div id='alerts'><h1>weather alerts: ");
+                if(alerts.length == 0)
+                    document.write("none</h1>");
+                else {
+                    document.write("</h1><ul>");
+                    alerts.forEach(function (alert) {
+                       document.write("<li>"+alert+"</li>");                    
+                    });
+                    document.write("</ul>");
+                }
+                if(tips.length != 0) {
+                    document.write("<h1>our tips for staying safe:</h1><ul>");
+                    tips.forEach(function (tip) {
+                        document.write("<li>"+tip+"</li>");
+                    });
+                    document.write("</ul>");
+                }
+                //printing out the safety rating
+                document.write("</div><div id='safety'><h1>our safety rating: <br>" + safety_rating + "</h1></div></div>");
+            }
+            //replace with object from server
+            var obj = {
+            "cod": "200",
+            "message": 0.0179,
+            "cnt": 96,
+            "list": [
+            {
+                "dt": 1568984400,
+                "main": {
+                    "temp": 312.73,
+                    "temp_min": 293.73,
+                    "temp_max": 293.816,
+                    "pressure": 1024.11,
+                    "sea_level": 1024.11,
+                    "grnd_level": 1019.47,
+                    "humidity": 32,
+                    "temp_kf": -0.08
+                },
+                "weather": [
+                {
+                    "id": 800,
+                    "main": "Clear",
+                    "description": "clear sky",
+                    "icon": "01d"
+                }
+                ],
+                "clouds": {
+                    "all": 0
+                },
+                "wind": {
+                    "speed": 4.67,
+                    "deg": 98.909
+                },
+                "sys": {
+                    "pod": "d"
+                },
+                "dt_txt": "2019-09-20 13:00:00"
+            }, 
+            {
+                "dt": 1568984400,
+                "main": {
+                    "temp": 300,
+                    "temp_min": 293.73,
+                    "temp_max": 293.816,
+                    "pressure": 1024.11,
+                    "sea_level": 1024.11,
+                    "grnd_level": 1019.47,
+                    "humidity": 32,
+                    "temp_kf": -0.08
+                },
+                "weather": [
+                {
+                    "id": 800,
+                    "main": "Clear",
+                    "description": "clear sky",
+                    "icon": "01d"
+                }
+                ],
+                "clouds": {
+                    "all": 0
+                },
+                "wind": {
+                    "speed": 13,
+                    "deg": 98.909
+                },
+                "sys": {
+                    "pod": "d"
+                },
+                "dt_txt": "2019-09-20 13:00:00"
+            }
+            ],
+            "city": {
+                "id": 2643743,
+                "name": "London",
+                "coord": {
+                "lat": 51.5085,
+                "lon": -0.1258
+            },
+            "country": "GB",
+            "population": 1000000,
+            "timezone": 3600,
+            "sunrise": 1568958164,
+            "sunset": 1569002733
+            }
+            };
+            
+            var activity = "run";
+            var city = obj.city.name;
+            var sunset = obj.city.sunset;
+            var sunrise = obj.city.sunrise;
+            document.write("<div id = 'title'><h1>Weather for " + city + "</h1></div>");
+            
+            for(idx = 0; idx < NUM_HOURS; idx++) {
+                console.log(idx);
+                var weather_id = obj.list[idx].weather[0].id;
+                var iconcode = obj.list[idx].weather[0].icon;
+                var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+                var timeDisp = getTime(obj.list[idx].dt_txt); //time to display
+                var time = obj.list[idx].dt;
+                var wind_speed = obj.list[idx].wind.speed;
+                var temp = obj.list[idx].main.temp;
+                var tempDisp = toF(temp); //temp to display
+                var weather_descrip = obj.list[idx].weather[0].description
+                var safetyRating = calculateSafety(activity, weather_id, weather_descrip, temp, time, sunset, sunrise, wind_speed);
+                printInfo(timeDisp, tempDisp, weather_descrip, iconurl, safetyRating, alerts, suggestions);
+            }
+        </script>
+        
+        <!--
+        <div id="hour">
+          <div id="info">
+            <h1>{time}</h1>
+            <img id="icon" src="http://openweathermap.org/img/w/01d.png">
+            <h3>{temp} &#8457</h3>
+            <h3>{weather}</h3>
+          </div>  
+        
+          <div id="alerts">
+            <h1>weather alerts:</h1>
+            <ul>
+              <li>bla bla bla </li>
+            </ul>
+            <h1>our tips for staying safe:</h1>
+            <ul>
+              <li>bla bla bla</li>
+            </ul>
+          </div>
+          <div id="safety">
+                <h1>our safety rating: {}</h1>
+          </div>
+        </div>
+        -->
+    
+    </body>
+</html>

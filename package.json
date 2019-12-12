@@ -1,0 +1,26 @@
+{
+  "name": "node-example",
+  "version": "1.0.0",
+  "description": "This example is so cool.",
+  "main": "insertWithClientVariable.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node insertWithClientVariable.js"
+  },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
+  "author": "jane-doe",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "start": "^5.1.0",
+    "socket.io": "^2.3.0",
+    "mongodb": "^3.4.0",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "engines": {
+    "node": "12.13.1"
+  }
+}

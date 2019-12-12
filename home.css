@@ -1,0 +1,172 @@
+@charset "UTF-8";
+/* CSS Document */
+body{
+    background: #222;
+}
+
+#logo{
+    position:absolute;
+    float: left;
+}
+
+
+.container2{
+
+    position: relative;
+    float: right;
+    border-left:25em;
+    padding-top: 8em;
+    margin-right: 22em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10em;
+    font-family: Arial;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: white;
+}
+
+#bikeimg{
+    height: 8.4em;
+    width: auto;
+}
+#runimg{
+     height: 8.4em;
+    width: auto;
+}
+#swimimg{
+     height: 8.4em;
+    width: auto;
+}
+#hikeimg{
+     height: 8.4em;
+    width: auto;
+}
+.run{
+    color: #ffff00;
+}
+.hike{
+    color: #FF6600;
+}
+
+.bike{
+    color: #FF007F;
+}
+.swim{
+   color: #00FFFF;
+}
+.safe1{
+    color: #00ff00;
+}
+.safe2{
+    color: #ff0000;
+}
+
+
+
+.perspective-text {
+    position:static;
+    float: left;
+  font-family: Arial;
+  font-weight: 900;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+    margin-top: 18em;
+    margin-left: 9em;
+  color: white;
+    cursor: crosshair;
+}
+
+div.block.block1{
+    padding-bottom: 1em;
+}
+div.block.block2{
+    padding-bottom: 1em;
+}
+div.block.block3{
+    padding-bottom: 1em;
+}
+h3{
+   margin-left: 1.5em;
+}
+h3:hover{
+    font-family: Arial;
+    color: #FF007F;
+}
+
+#myForm{
+    position: absolute;
+    right:0;
+    margin-top: 10em;
+    margin-right: 5em;
+    font-family: Arial;
+}
+input[type=text]:focus, textarea:focus {
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+  padding: 3px 0px 3px 3px;
+
+  border: 1px solid rgba(81, 203, 238, 1);
+}
+
+input[type=submit]{
+    background-color: #39ff14 ;
+    border-radius: 3px;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 2px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+#zipcode{
+    color: white;
+}
+p {
+  margin: 0;
+  height: 50px;
+  line-height: 50px;
+  transition: all 0.5s ease-in-out;
+font-size: 50px;
+}
+.perspective-line {
+  height: 50px;
+  overflow: hidden;
+}
+
+.perspective-line:nth-child(odd) {
+  transform: skew(60deg, -30deg) scaleY(0.667);
+}
+.perspective-line:nth-child(even) {
+  transform: skew(0deg, -30deg) scaleY(1.333);
+}
+.perspective-line {
+  position: relative;
+}
+.perspective-line:hover p{
+  transform: translate(0, -80px);
+}
+.perspective-line:nth-child(1) {
+  left: 29px;
+}
+.perspective-line:nth-child(2) {
+  left: 58px;
+}
+.perspective-line:nth-child(3) {
+  left: 87px;
+}
+.perspective-line:nth-child(4) {
+  left: 116px;
+}
+.perspective-line:nth-child(5) {
+  left: 145px;
+}
+
+.perspective-line:hover p{
+  transform: translate(0, -50px);
+}
+p {
+  transition: all 0.5s ease-in-out;
+}
+.block{
+    height: 50%;
+    width: 200px;
+}
