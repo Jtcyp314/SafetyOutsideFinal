@@ -2,7 +2,7 @@ const {MongoClient} = require('mongodb');
 const express = require('express');
 const socketIO = require('socket.io');
         const PORT =   process.env.PORT || 3000;
-        const INDEX = '/testSocket.html';
+        const INDEX = '/index.html';
 
 /*const PORT =  process.env.PORT || 3000;
 const INDEX = '/testSocket.html';
@@ -174,6 +174,11 @@ async function main()
         const server =  await express()
           .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
           .listen(PORT, () => console.log(`Listening on ${PORT}`));
+          const app = new express()
+
+        app.get('bikingcircle.png', function (req, res, next) {
+    res.sendFile(path.join(__dirname,'bikingcircle.png'))
+});
         // Connect to the MongoDB cluster
 
         //const io = await socketIO(server);

@@ -1,9 +1,190 @@
-<!doctype html>
+
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Safety Outside</title>
-    <link rel="stylesheet" href="home.css">
+
+    <!--<link rel="stylesheet" href="home.css">-->
+<script src="/socket.io/socket.io.js"></script>
+    <style>
+      @charset "UTF-8";
+/* CSS Document */
+body{
+    background: #222;
+}
+
+#logo{
+    position:absolute;
+    float: left;
+}
+
+
+.container2{
+
+    position: relative;
+    float: right;
+    border-left:25em;
+    padding-top: 8em;
+    margin-right: 22em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10em;
+    font-family: Arial;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: white;
+}
+
+#bikeimg{
+    height: 8.4em;
+    width: auto;
+}
+#runimg{
+     height: 8.4em;
+    width: auto;
+}
+#swimimg{
+     height: 8.4em;
+    width: auto;
+}
+#hikeimg{
+     height: 8.4em;
+    width: auto;
+}
+.run{
+    color: #ffff00;
+}
+.hike{
+    color: #FF6600;
+}
+
+.bike{
+    color: #FF007F;
+}
+.swim{
+   color: #00FFFF;
+}
+.safe1{
+    color: #00ff00;
+}
+.safe2{
+    color: #ff0000;
+}
+
+
+
+.perspective-text {
+    position:static;
+    float: left;
+  font-family: Arial;
+  font-weight: 900;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+    margin-top: 18em;
+    margin-left: 9em;
+  color: white;
+    cursor: crosshair;
+}
+
+div.block.block1{
+    padding-bottom: 1em;
+}
+div.block.block2{
+    padding-bottom: 1em;
+}
+div.block.block3{
+    padding-bottom: 1em;
+}
+h3{
+   margin-left: 1.5em;
+}
+h3:hover{
+    font-family: Arial;
+    color: #FF007F;
+}
+
+#myForm{
+    position: absolute;
+    right:0;
+    margin-top: 10em;
+    margin-right: 5em;
+    font-family: Arial;
+}
+input[type=text]:focus, textarea:focus {
+  box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+  padding: 3px 0px 3px 3px;
+
+  border: 1px solid rgba(81, 203, 238, 1);
+}
+
+input[type=submit]{
+    background-color: #39ff14 ;
+    border-radius: 3px;
+    border: none;
+    padding: 5px 10px;
+    margin-left: 2px;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+#zipcode{
+    color: white;
+}
+p {
+  margin: 0;
+  height: 50px;
+  line-height: 50px;
+  transition: all 0.5s ease-in-out;
+font-size: 50px;
+}
+.perspective-line {
+  height: 50px;
+  overflow: hidden;
+}
+
+.perspective-line:nth-child(odd) {
+  transform: skew(60deg, -30deg) scaleY(0.667);
+}
+.perspective-line:nth-child(even) {
+  transform: skew(0deg, -30deg) scaleY(1.333);
+}
+.perspective-line {
+  position: relative;
+}
+.perspective-line:hover p{
+  transform: translate(0, -80px);
+}
+.perspective-line:nth-child(1) {
+  left: 29px;
+}
+.perspective-line:nth-child(2) {
+  left: 58px;
+}
+.perspective-line:nth-child(3) {
+  left: 87px;
+}
+.perspective-line:nth-child(4) {
+  left: 116px;
+}
+.perspective-line:nth-child(5) {
+  left: 145px;
+}
+
+.perspective-line:hover p{
+  transform: translate(0, -50px);
+}
+p {
+  transition: all 0.5s ease-in-out;
+}
+.block{
+    height: 50%;
+    width: 200px;
+}
+    </style>
+
+
+
+
+
 <!--     <link href="https://seattleowl.com/pointer.js/pointer.css" rel="stylesheet">-->
     <link href="https://fonts.googleapis.com/css?family=Fredoka+One&display=swap" rel="stylesheet">
     
@@ -57,21 +238,328 @@
         </div>
     </div>
     
-    <div id="myForm" style="display:none">
-        <form action="/action_page.php">
-            <span id="zipcode"> ZIPCODE: </span><input type="text">
-            <input type="submit" value="Submit">
-</form>
+    <div id="myForm">
+        <!--<form action="/action_page.php">-->
+            <span id="zipcode"></span><input placeholder="Zip Code" id = "zipcodeText" type="text">
+            <input type="submit" value="Submit" onclick="runFunction(), runFunction()">
+            <input type="submit" value="Get Weather" onclick="runAlg()">
+<!--</form>-->
         </div>
     
     
 <!--<script src="https://seattleowl.com/pointer.js/pointer.js"></script>-->
+<script type="text/javascript">
+  
+
+  ///////////////////////////
+//  BOUNDARY CONDITIONS  //
+///////////////////////////
+const MILD_WEATHER_IDS = [300, 310, 500, 520, 600, 612, 615, 620];
+const NUM_MILD_IDS = 8;
+const MODERATE_WEATHER_IDS = [210, 301, 311, 313, 501, 521, 601, 621];
+const NUM_MODERATE_IDS = 8;
+const BAD_WEATHER_IDS = [200, 201, 211, 230, 231, 302, 312, 314, 321, 502, 511, 522, 531, 602, 611, 613, 616];
+const NUM_BAD_IDS = 19;
+const EXTREME_WEATHER_IDS = [202, 212, 221, 232, 503, 504, 622, 771, 781];
+const NUM_EXTREME_IDS = 9;
+const BAD_ATMOS_IDS_RHB = [762, 761, 751, 731, 711];
+const NUM_BAD_ATMOS_IDS_RHB = 5;
+const BAD_ATMOS_IDS_S = [701, 741];
+const NUM_BAD_ATMOS_IDS_S = 2;
+//temps are in Kelvin
+const HOTTEST_TEMP = 327, HOTTER_TEMP = 313, HOT_TEMP = 305;
+const COLDEST_TEMP = 247, COLDER_TEMP = 263, COLD_TEMP = 278; 
+//wind speed in m/s
+const HIGHEST_WIND = 17, HIGHER_WIND = 13.5, HIGH_WIND = 11;
+
+/////////////////
+//  VARIABLES  //
+/////////////////
+var alerts = new Array();
+var suggestions = new Array();
+var numAlerts = 0, numSuggestions = 0, safetyVal = 100;
+
+
+////////////////////////
+//  HELPER FUNCTIONS  //
+////////////////////////
+
+//adds an alert to the list
+function addAlert(text) {
+  alerts[numAlerts] = text;
+  numAlerts++;
+}
+
+//adds a suggestion to the list
+function addSuggestion(text) {
+  suggestions[numSuggestions] = text;
+  numSuggestions++;
+}
+
+//adjusts temp for wind chill if necessary
+function calculateWindChill(speedMS, tempK) {
+    console.log("adjusting for wind chill"); //for testing
+    //converting temp and speed into fahrenheit and mph
+    tempF = (tempK-273.15)*9/5 + 32;
+    alert = "Temperature adjusted for wind chill: original temperature: " + tempF;
+    speedMPH = speedMS*2.237;
+    //calculating windchill using formula
+    windChillF = 35.74 + 0.6215*tempF - 35.75*Math.pow(speedMPH, 0.16) + 0.4275*tempF*Math.pow(speedMPH,0.16);
+    alert += " degrees, with wind chill: " + windChillF + " degrees."; 
+    //converting wind chill back to Kelvin
+    windChillK = (windChillF - 32)*5/9 + 273;
+    console.log("temp: "+tempK+", speed: "+speedMS+", windChill: "+windChillK); //for testing
+    console.log(alert);
+    addAlert(alert);
+    //alerts[numAlerts] = alert;
+    //numAlerts++;
+    return windChillK;
+}
+
+//checks conditions that immediately make activities dangerous
+function checkForImmediateNo(temp, activity, weather_id, weather_descrip, wind, time, sunset, sunrise) {
+    //console.log("temp: " + temp+ ", wind_speed: " + wind + ", activity: " + activity + ", weather_id: " + weather_id + ", weather_descrip: " + weather_descrip);
+    //temps too cold for swimming
+    if(activity == "swim" && temp < COLD_TEMP) {
+      console.log("too cold");
+      addAlert("Temperatures are too cold to swim");
+      return 0;
+    }
+    //thunderstorms not suitable for swimming
+    if(activity == "swim" && Math.floor((weather_id / 100)) == 2) {
+        addAlert("Thunderstorms are present. Swimming not recommended.");
+        return 10;
+    }
+    //icy conditions not suitable for biking
+    if(activity == "bike" && Math.floor((weather_id / 100)) == 6) {
+        addAlert("Snowy conditions may make biking paths slippery.");
+        return 10;
+    }
+    //extreme weather present
+    for(i = 0; i < NUM_EXTREME_IDS; i++) {
+        if(EXTREME_WEATHER_IDS[i] == weather_id) {
+          addAlert("Extreme weather: " + weather_descrip);
+          return 5;
+        }
+    }
+    //wind speed too high
+    if(wind > HIGHEST_WIND) {
+      addAlert("Wind speed is too high.");
+      return 5;
+    }
+    //temp too hot
+    if(temp > HOTTEST_TEMP) {
+      addAlert("Temperatures are extrememly hot. Going outside may lead to heatstroke.");
+      return 0;
+    }
+    //temp too cold
+    if(temp < COLDEST_TEMP) {
+      addAlert("Temperatures are extrememly cold. Going outside may lead to frostbite or hypothermia");
+      return 0;
+    }
+    //dark outside
+    if(time > sunset || time < sunrise) {
+      addAlert("It is dark outside.");
+      if(activity == "run") {
+          addSuggestion("Wear reflective clothing and/or a headlamp when running in the dark");
+          return 70;
+      }
+      else
+          return 5;
+    }
+    return 100;
+}
+
+// adjusts the safety score based on the type of weather 
+function adjustForWeather(activity, weather_id, weather_descrip) 
+{
+    alerts = [];
+    suggestions = [];
+    numAlerts = 0, numSuggestions = 0;
+    //looking at the main weather categories
+    main_id = Math.floor(weather_id/100); 
+    switch(main_id) {
+        case 2: 
+            addSuggestion("Stay in a covered area if possible, especially if lightning gets close.");
+            addAlert("Thunderstorms present.");
+            break;
+        case 5:
+            addSuggestion("Stay dry and warm with waterproof clothing.");
+            break;
+        case 6:
+            addSuggestion("Stay dry and warm with waterproof clothing.");
+            addAlert("Snow present. Slippery conditions may exist");
+            break;
+        default:
+            break;
+    }
+    //checking for mild weather 
+    for(i = 0; i < NUM_MILD_IDS; i++) {
+        if(weather_id == MILD_WEATHER_IDS[i]) {
+            addAlert("Mild weather: " + weather_descrip);
+            return 5;
+        }
+    }
+    //checking for moderate weather
+    for(i = 0; i < NUM_MODERATE_IDS; i++) {
+        if(weather_id == MODERATE_WEATHER_IDS[i]) {
+            addAlert("Moderate weather: " + weather_descrip);
+            return 10;
+        }
+    }
+    //checking for bad weather
+    for(i = 0; i < NUM_BAD_IDS; i++) {
+        if(weather_id == BAD_WEATHER_IDS[i]) {
+            addAlert("Bad weather: " + weather_descrip);
+            return 20;
+        }
+    }
+    return 0;
+}
+
+// adjusts the safety value based on the temperature
+function adjustForTemp(activity, temp)
+{
+    //checking for hot temps
+    if(temp < HOTTER_TEMP && temp > HOT_TEMP) {
+        addAlert("Temperatures are very hot. Heat exhaustion is likely.");
+        addSuggestion("Limit outdoor activities at this temperature.");
+        if(activity == "swim") 
+            return 50;
+        else
+            return 70;
+    }
+    if(temp > HOTTER_TEMP && temp < HOTTEST_TEMP) {
+        addAlert("Temperatures are very hot. Heat cramps and exhaustion are possible.");
+        addSuggestion("Stay hydrated and limit intense exercise to a short period.");
+        if(activity == "swim") 
+            return 50;
+        else
+            return 70;
+    }
+
+    //checking for cold temps
+    if(temp > COLD_TEMP && temp < COLDER_TEMP) { 
+        addAlert("Temperatures are cold.");
+        addSuggestion("Wear warm clothing.");
+        return 40;
+    }
+    if(temp > COLDER_TEMP && temp < COLDEST_TEMP) { 
+        addAlert("Temperatures are very cold. Frostbite is possible with excess exposure.");
+        addSuggestion("Wear warm clothing, including a hat and gloves and limit exposure.");
+        return 75;
+    }
+    return 0;
+}
+
+// adjusts the safety value based on the wind speed
+function adjustForWind(wind_speed)
+{
+    if(wind_speed < HIGHER_WIND && wind_speed > HIGH_WIND) {
+      addAlert("High winds");
+      return 30;
+    }
+    if(wind_speed > HIGHER_WIND && wind_speed < HIGHEST_WIND) {
+      addAlert("Very high winds.");
+      return 50;
+    }
+
+    return 0;
+}
+
+/////////////////////
+//  MAIN FUNCTION  //
+/////////////////////
+
+function calculateSafety(activity, weather_id, weather_descrip, temp, time, sunset, sunrise, wind_speed) {
+    //for testing
+    console.log("INITIAL CONDITIONS:");
+    console.log("activity: " + activity + ", weather_id: " + weather_id + ", weather_descrip: " + weather_descrip);
+    console.log("temp: " + temp + ", time: " + time + ", sunset: " + sunset + ", sunrise: " + sunrise + ", wind_speed: " + wind_speed);
+    //checking if wind chill needs to be calculated
+    if(temp < 283 && wind_speed > 1.34)
+        temp = calculateWindChill(wind_speed, temp);
+    //checking for overall bad/dangerous conditions and stopping if anything is found
+    safetyVal = checkForImmediateNo(temp, activity, weather_id, weather_descrip, wind_speed);
+    if(safetyVal < 50) {
+        //printing out alerts -- for testing
+        for(i = 0; i < numAlerts; i++)
+            console.log(alerts[i]);
+        return safetyVal;
+    }
+    //adjusting the safety value accordingly
+    safetyVal -= adjustForWeather(activity, weather_id, weather_descrip);
+    safetyVal -= adjustForTemp(activity, temp);
+    safetyVal -= adjustForWind(wind_speed);
+    if(safetyVal < 0)
+        safetyVal = 0;
+    return safetyVal;
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <script>
+
 //init_pointer({
 //  pointerColor: "#fff", // Css color
 //  ringSize: 10, // Pixels
 //  ringClickSize: 5 // Pixels when clicking
 //})
+
+        var obj;
+
+function runFunction()
+{
+        var socket = io("localhost:3000"); // TIP: io() with no args does auto-discovery
+
+        var stringZipcode = document.getElementById("zipcodeText").value;
+
+        console.log(stringZipcode);
+
+        socket.on('connect', function () 
+        { 
+          //find way to insert that into api string to get currect zip
+          socket.emit('test', stringZipcode, function(serverObj)
+          {
+            console.log("hitting test")
+              //console.log(stringZipcode);
+              testString = serverObj;
+              //console.log(testString)
+              console.log(testString)
+              obj = JSON.parse(testString);
+              //document.getElementById("server-temp").innerHTML = obj.list[0].main.temp;
+              //document.getElementById("server-weather").innerHTML = obj.list[0].weather[0].description
+              //document.getElementById("server-name").innerHTML = obj.city.name;
+
+
+              console.log(obj.list[0].main.temp);
+              console.log(obj.list[0].weather[0].description)
+              console.log(obj.city.name);
+          });
+
+  });
+        //runAlg();
+}
+
+console.log(JSON.stringify(obj));
+
     
 //mydiv = document.getElementById("myForm");
 // $("myForm").hide();
@@ -83,14 +571,141 @@ function myFunction() {
     x.style.display = "none";
   }
 }
-//function myFunction() {
-//  var x = document.getElementById("myForm");
-//  if (x.style.display === "none") {
-//    x.style.display = "block";
-//  } else {
-//    x.style.display = "none";
-//  }
-//}
+
+
+
+            const NUM_HOURS = 4;
+            function toF (tempK) {
+                return Math.floor((tempK - 273) * 9/5 + 32);
+            }
+            function getTime(dateString) {
+                var dateNtime = dateString.split(" ");
+                var time24 = dateNtime[1];
+                var hms = time24.split(":");
+                var hours = hms[0], minutes = hms[1], x = "am";
+                if(hours >= 12) {
+                    x = "pm";
+                    if(hours > 12)
+                        hours -= 12;
+                }
+                if(hours == 0)
+                    hours = 12;
+                return hours + ":" + minutes + " " + x;
+            }
+            function printInfo(time, temp, weather, iconURL, safety_rating, alerts, tips) {
+                //printing out the basic weather info
+                document.write("<div id='hour' style = \"width:100%;background-color:#bdbdbd;font-family: 'Roboto', sans-serif;padding: 20px;overflow: hidden;margin: 30px;\"><div id='info' style = \"    float:left;width:25%;color: #161616;height:100%;background-color: #afafaf;padding:20px;text-align: center;\"><h1 style = \"    font-weight: 200;margin: 10px;\">" + time);
+                document.write("</h1><img id='icon' src='" + iconURL +"'>");
+                document.write("<h3 style = \"font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;font-size: 20px;\">"+temp+" &#8457</h3>");
+                document.write("<h3 style = \"font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;font-size: 20px;\">" + weather + "</h3></div>");  
+                //printing out the alerts and suggestions
+                document.write("<div id='alerts' style = \"    padding: 10px;float: left;\"><h1>weather alerts: ");
+                if(alerts.length == 0)
+                    document.write("none</h1>");
+                else {
+                    document.write("</h1><ul style = \"font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;font-size: 20px;\">");
+                    alerts.forEach(function (alert) {
+                       document.write("<li>"+alert+"</li>");                    
+                    });
+                    document.write("</ul>");
+                }
+                if(tips.length != 0) {
+                    document.write("<h1>our tips for staying safe:</h1><ul>");
+                    tips.forEach(function (tip) {
+                        document.write("<li>"+tip+"</li>");
+                    });
+                    document.write("</ul>");
+                }
+                //printing out the safety rating
+                document.write("</div><div id='safety' style = \"    float:right;width: 25%;height: 100%;text-align: center;color: #161616;\"><h1>our safety rating: <br>" + safety_rating + "</h1></div></div>");
+            }
+            //replace with object from server
+            
+            function runAlg()
+            {
+              var activity = "run";
+              var city = obj.city.name;
+              var sunset = obj.city.sunset;
+              var sunrise = obj.city.sunrise;
+              document.write("<div id = 'title' style = \"    width:100%;font-family: 'Fredoka One', sans-serif;font-weight: 900;text-transform: uppercase;color: #FF007F;    text-align:center; margin:30px 0;\"><h1>Weather for " + city + "</h1></div>");
+                  
+              for(idx = 0; idx < NUM_HOURS; idx++) {
+                  console.log(idx);
+                  var weather_id = obj.list[idx].weather[0].id;
+                  var iconcode = obj.list[idx].weather[0].icon;
+                  var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+                  var timeDisp = getTime(obj.list[idx].dt_txt); //time to display
+                  var time = obj.list[idx].dt;
+                  var wind_speed = obj.list[idx].wind.speed;
+                  var temp = obj.list[idx].main.temp;
+                  var tempDisp = toF(temp); //temp to display
+                  var weather_descrip = obj.list[idx].weather[0].description
+                  var safetyRating = calculateSafety(activity, weather_id, weather_descrip, temp, time, sunset, sunrise, wind_speed);
+                  printInfo(timeDisp, tempDisp, weather_descrip, iconurl, safetyRating, alerts, suggestions);
+            }
+            }
     </script>
+
+
+
+    <style type="text/css">
+  body {
+    background: #222;
+  }
+  
+  h1 {
+    font-weight: 200;
+    margin: 10px;
+  }
+  #title {
+    width:100%;
+    font-family: 'Fredoka One', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #FF007F;
+    text-align:center;
+    margin:30px 0;
+  }
+  #hour {
+      width:100%;
+      background-color:#bdbdbd;
+      font-family: 'Roboto', sans-serif;
+      padding: 20px;
+      overflow: hidden;
+      margin: 30px;
+  }
+  #icon {
+    float:left;
+  }
+  #info {
+    float:left;
+    width:25%;
+    color: #161616;
+    height:100%;
+    background-color: #afafaf;
+    padding:20px;
+    text-align: center;
+  }
+  #hour h1 {
+    font-family: 'Fredoka One', sans-serif;
+  }
+  #alerts {
+    padding: 10px;
+    float: left;
+  }
+  #safety {
+    float:right;
+    width: 25%;
+    height: 100%;
+    text-align: center;
+    color: #161616;
+  }
+  h3, ul {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 20px;
+  }
+  
+  /* colors: #00FFFF, #C2FF50, #FF007F */
+</style>
 </body>
 </html>
