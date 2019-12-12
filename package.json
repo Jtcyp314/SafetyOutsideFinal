@@ -2,10 +2,10 @@
   "name": "node-example",
   "version": "1.0.0",
   "description": "This example is so cool.",
-  "main": "insertWithClientVariable.js",
+  "main": "insert_final_push.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node insertWithClientVariable.js"
+    "start": "node insert_final_push.js"
   },
   "keywords": [
     "example",
