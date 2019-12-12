@@ -221,20 +221,20 @@ p {
     
     <div class="container2">
         <div class="block block1">
-           <input type="image" src="bikingcircle.png" alt="Bike" id ="bikeimg" class="img" onclick="myFunction()">
-             <h3 id="bikewords">BIKE</h3>
+
+             <h3 id="bikewords" onclick="setClassName('bike')">BIKE</h3>
         </div>
         <div class="block block2">
-             <input type="image" src="test1.png" alt="Bike" id ="runimg" class="img" onclick="myFunction()">
-             <h3 id="runwords">RUN</h3>
+
+             <h3 id="runwords" onclick="setClassName('run')">RUN</h3>
         </div>
         <div class="block block3">
-             <input type="image" src="swimmingcircle.png" alt="Swim" id ="swimimg" class="img" onclick="myFunction()">
-             <h3 id="swimwords">SWIM</h3>
+
+             <h3 id="swimwords" onclick="setClassName('swim')">SWIM</h3>
         </div>
         <div class="block block4">
-            <input type="image" src="hikecircle1.png" alt="Hike" id ="hikeimg" class="img" onclick="myFunction()">
-             <h3 id="runwords">HIKE</h3>
+
+             <h3 id="runwords" onclick="setClassName('hike')">HIKE</h3>
         </div>
     </div>
     
@@ -525,6 +525,13 @@ function calculateSafety(activity, weather_id, weather_descrip, temp, time, suns
 
         var obj;
 
+        activityName = "run";
+        function setClassName(name)
+        {
+          activityName = name;
+          console.log(activityName);
+        }
+
 function runFunction()
 {
         var socket = io(); // TIP: io() with no args does auto-discovery
@@ -623,7 +630,7 @@ function myFunction() {
             
             function runAlg()
             {
-              var activity = "run";
+              var activity = activityName;
               var city = obj.city.name;
               var sunset = obj.city.sunset;
               var sunrise = obj.city.sunrise;
