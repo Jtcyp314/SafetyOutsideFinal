@@ -527,7 +527,7 @@ function calculateSafety(activity, weather_id, weather_descrip, temp, time, suns
 
 function runFunction()
 {
-        var socket = io("localhost:3000"); // TIP: io() with no args does auto-discovery
+        var socket = io(); // TIP: io() with no args does auto-discovery
 
         var stringZipcode = document.getElementById("zipcodeText").value;
 
